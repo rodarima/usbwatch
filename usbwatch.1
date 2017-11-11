@@ -1,0 +1,34 @@
+.TH USBWATCH "1" "November 2017" "usbwatch 0.01" "User Commands"
+.SH NAME
+usbwatch \- monitor USB events
+.SH SYNOPSIS
+.B usbwatch
+.SH DESCRIPTION
+The
+.B usbwatch
+program monitors
+.BR udev(7)
+events; when adding or removing a new USB device, a 
+notification is produced using libnotify.
+.P
+If a device is removed and added too fast, a device reset is assumed and an error 
+is notified.
+.P
+.SH OPTIONS
+.IP "-t interval"
+Use
+.I interval
+milliseconds as limit to consider a device reset. The default is 400 ms.
+.SH AUTHOR
+Rodrigo Arias <rodarima@gmail.com>
+.SH "REPORTING BUGS"
+See the Git repository at <http://github.com/rodarima/>
+.SH COPYRIGHT
+Copyright \(co 2017 Rodrigo Arias.
+.P
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>.
+.P
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+.SH "SEE ALSO"
+udev(7), udevadm(8)

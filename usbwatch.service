@@ -1,0 +1,11 @@
+[Unit]
+Description=usbwatch daemon
+Documentation=man:usbwatch(1)
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/usbwatch
+
+[Install]
+WantedBy=default.target
+
