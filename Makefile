@@ -1,5 +1,5 @@
 LDFLAGS=-ludev `pkg-config --libs libnotify`
-CFLAGS= `pkg-config --cflags libnotify`
+CFLAGS=-O2 `pkg-config --cflags libnotify`
 
 PREFIX ?= /usr/local
 MANPREFIX = ${PREFIX}/share/man
