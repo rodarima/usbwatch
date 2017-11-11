@@ -15,8 +15,6 @@ install-usbwatch: usbwatch
 	install -m644 usbwatch.1 ${DESTDIR}${MANPREFIX}/man1
 
 install-service: usbwatch.1
-	#mkdir -p ${DESTDIR}${PREFIX}/share/dbus-1/services/
-	#install -m644 org.knopwob.dunst.service ${DESTDIR}${PREFIX}/share/dbus-1/services
 	install -Dm644 usbwatch.service ${DESTDIR}${PREFIX}/lib/systemd/user/usbwatch.service
 
 install: install-usbwatch install-service
@@ -24,8 +22,6 @@ install: install-usbwatch install-service
 uninstall:
 	rm -f ${DESTDIR}${PREFIX}/bin/usbwatch
 	rm -f ${DESTDIR}${MANPREFIX}/man1/usbwatch.1
-	#rm -f ${DESTDIR}${PREFIX}/share/dbus-1/services/org.knopwob.dunst.service
-	#rm -rf ${DESTDIR}${PREFIX}/share/dunst
 	rm -f ${DESTDIR}${PREFIX}/lib/systemd/user/usbwatch.service
 
 clean:
