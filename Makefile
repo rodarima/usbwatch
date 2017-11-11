@@ -1,6 +1,9 @@
 LDFLAGS=-ludev `pkg-config --libs libnotify`
 CFLAGS= `pkg-config --cflags libnotify`
 
+PREFIX ?= /usr/local
+MANPREFIX = ${PREFIX}/share/man
+
 all: usbwatch
 
 usbwatch: usbwatch.c
