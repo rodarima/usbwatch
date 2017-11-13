@@ -3,6 +3,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 #include <sys/time.h>
 #include <libnotify/notify.h>
 
@@ -18,6 +19,8 @@ struct dev_t *dev_history = NULL;
 
 /* Maximum time between resets to consider a fault */
 int millis = 400;
+int warn_add = 0;
+int warn_remove = 0;
 
 /* Status */
 #define STATUS_ADDED 1
@@ -128,14 +131,10 @@ void problem(struct dev_t *dev, int new_status, struct timeval *diff)
 
 	snprintf(buf, MAXLINE, "Problem with %s", dev->syspath);
 	buf[MAXLINE-1] = 0;
-	//printf("Problem with %s time diff %lu.%lu\n", dev->syspath,
-	//	diff->tv_sec, diff->tv_usec);
-	printf(buf);
 
 	NotifyNotification * n = notify_notification_new(
-		"USB reset", buf, "dialog-information");	
+		"USB reset", buf, "dialog-warning");
 	notify_notification_set_urgency(n, NOTIFY_URGENCY_CRITICAL);
-        notify_notification_set_timeout(n, 20000); // 10 seconds
 	notify_notification_show(n, NULL);
 	g_object_unref(G_OBJECT(n));
 }
@@ -183,7 +182,11 @@ int event_device(const char *syspath, int new_status)
 			}
 			else
 			{
-				notify_device(dev, new_status);
+				if(((new_status == STATUS_ADDED) && warn_add) ||
+					((new_status == STATUS_REMOVED) && warn_remove))
+				{
+					notify_device(dev, new_status);
+				}
 			}
 		}
 		free(dev->lastseen);
@@ -200,7 +203,11 @@ int event_device(const char *syspath, int new_status)
 	dev->status = new_status;
 	dev->next = NULL;
 
-	notify_device(dev, new_status);
+	if(((new_status == STATUS_ADDED) && warn_add) ||
+		((new_status == STATUS_REMOVED) && warn_remove))
+	{
+		notify_device(dev, new_status);
+	}
 	add_device(dev);
 
 	return 0;
@@ -230,7 +237,7 @@ int event(struct udev_device *dev)
 
 void usage()
 {
-	printf("Usage: usbwatch [-t <interval>]\n");
+	printf("Usage: usbwatch [-t <interval>] [-a] [-r]\n");
 	exit(1);
 }
 
@@ -282,17 +289,25 @@ void monitor(struct udev *udev)
 int main(int argc, char *argv[])
 {
 	struct udev *udev;
+	int opt;
 
-	if(argc == 3)
+	while ((opt = getopt(argc, argv, "art:")) != -1)
 	{
-		if(strcmp(argv[1], "-t") == 0)
+		switch (opt)
 		{
-			millis = atoi(argv[2]);
+			case 'a':
+				warn_add = 1;
+				break;
+			case 'r':
+				warn_remove = 1;
+				break;
+			case 't':
+				millis = atoi(optarg);
+				break;
+			default: /* '?' */
+				usage();
 		}
-		else usage();
 	}
-	else if (argc != 1) usage();
-
 
 	notify_init("usbwatch");
 	

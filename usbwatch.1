@@ -2,7 +2,7 @@
 .SH NAME
 usbwatch \- monitor USB events
 .SH SYNOPSIS
-.B usbwatch
+.B usbwatch [-t interval] [-a] [-r]
 .SH DESCRIPTION
 The
 .B usbwatch
@@ -19,6 +19,10 @@ is notified.
 Use
 .I interval
 milliseconds as limit to consider a device reset. The default is 400 ms.
+.IP -a
+Warn when a new device is connected.
+.IP -r
+Warn when a new device is disconnected.
 .SH AUTHOR
 Rodrigo Arias <rodarima@gmail.com>
 .SH "REPORTING BUGS"
